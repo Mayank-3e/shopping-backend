@@ -1,14 +1,24 @@
 import express from 'express'
 import cors from 'cors'
+import Product from './models/products.js';
 
 const app = express();
 const port=process.env.PORT||4000
 app.use(express.json())
 app.use(cors())
 
-app.get('/', (_,res)=>
+app.get('/', async(_,res)=>
 {
-  res.send("hi")
+  try
+  {
+    const data = await Product.findAll()
+    return res.json({data})
+  }
+  catch(e)
+  {
+    console.error(e);
+    return res.json({err: 'Cannot fetch.'})
+  }
 })
 
 app.listen(port, e =>
