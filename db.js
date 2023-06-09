@@ -1,8 +1,12 @@
 import {Sequelize} from 'sequelize'
 import * as dotenv from 'dotenv'
+import * as pg from 'pg'
 dotenv.config()
 
-const sequelize = new Sequelize(process.env.dburi,{logging: false})
+const sequelize = new Sequelize(process.env.dburi,{
+  logging: false,
+  dialectModule: pg.Client
+})
 try {
   await sequelize.authenticate();
   console.log('Connection has been established successfully.');
