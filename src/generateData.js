@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import Product from '../models/products.js';
 
 const commerce=faker.commerce
 export function generateProducts()
@@ -15,6 +16,7 @@ export function generateProducts()
 
     items.push({
       name: commerce.product(),
+      category: 'product',
       price,
       taxCategory,
       taxAmount
@@ -55,6 +57,7 @@ export function generateServices()
 
     items.push({
       name: item.name,
+      category: 'service',
       price,
       taxCategory,
       taxAmount
@@ -62,3 +65,8 @@ export function generateServices()
   })
   return items
 }
+
+// Product.bulkCreate(generateProducts(),{ignoreDuplicates: true})
+//   .then(console.log('created products'))
+// Product.bulkCreate(generateServices(),{ignoreDuplicates: true})
+//   .then(console.log('created services'))
