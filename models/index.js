@@ -8,7 +8,8 @@ export default function SyncAll()
 {
   // sequelize.drop().then(console.log('Dropped tables'))
 
-  User.sync({force:true})
+  // User.sync({force:true})
+  User.sync()
     .then(console.log('synced User'))
 
   // Product.sync({force:true})
@@ -16,11 +17,12 @@ export default function SyncAll()
     .then(console.log('synced Product'))
 
   User.hasOne(Cart)
+  Cart.belongsTo(User)
 
   Cart.belongsToMany(Product,{through: CartItem})
   Product.belongsToMany(Cart,{through: CartItem})
 
   // sequelize.sync({force: true})
   sequelize.sync()
-  .then(console.log('synced seq'))
+    .then(console.log('synced seq'))
 }

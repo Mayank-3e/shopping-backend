@@ -9,7 +9,7 @@ const port=process.env.PORT||4000
 app.use(express.json())
 app.use(cors())
 
-// SyncAll()
+SyncAll()
 
 app.get('/', async(_,res)=>
 {
