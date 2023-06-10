@@ -1,8 +1,8 @@
-import User from "./user.js";
-import Product from "./products.js";
-import Cart from "./cart.js";
+import { User } from "./user.js";
+import { Product } from "./products.js";
+import { Cart } from "./cart.js";
+import { CartItem } from "./cartitems.js";
 import sequelize from "../db.js";
-import CartItem from "./cartitems.js";
 
 export default function SyncAll()
 {
@@ -22,7 +22,12 @@ export default function SyncAll()
   Cart.belongsToMany(Product,{through: CartItem})
   Product.belongsToMany(Cart,{through: CartItem})
 
+  // CartItem.sync({force:true})
+  // CartItem.sync()
+  //   .then(console.log('synced Cartitems'))
+
   // sequelize.sync({force: true})
   sequelize.sync()
     .then(console.log('synced seq'))
 }
+export {User,Product,Cart,CartItem}

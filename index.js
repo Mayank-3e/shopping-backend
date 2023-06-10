@@ -1,8 +1,8 @@
 import express from 'express'
 import cors from 'cors'
-import Product from './models/products.js';
+import { Product } from './models/index.js';
 import SyncAll from './models/index.js';
-import userRouter from './controllers/users.js';
+import { userRouter, cartRouter } from './controllers/index.js'
 
 const app = express();
 const port=process.env.PORT||4000
@@ -26,6 +26,7 @@ app.get('/', async(_,res)=>
 })
 
 app.use('/users',userRouter)
+app.use('/cart',cartRouter)
 
 app.listen(port, e =>
 {

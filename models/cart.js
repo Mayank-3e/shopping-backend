@@ -1,4 +1,3 @@
 import sequelize from "../db.js";
 
-const Cart = sequelize.define('Cart')
-export default Cart
+export const Cart = sequelize.define('Cart')

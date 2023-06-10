@@ -1,10 +1,9 @@
 import { Router } from "express";
-import User from "../models/user.js";
-import Cart from "../models/cart.js";
+import {User,Cart} from "../models/index.js";
 
 const router=Router()
 
-router.get('/',async(req,res)=>
+router.get('/',async(_,res)=>
 {
   try
   {
@@ -45,4 +44,29 @@ router.post('/',async(req,res)=>
   }
 })
 
+router.get('/:userId/bill',async(req,res)=>
+{
+  const {userId}=req.params
+  let products
+  try
+  {
+    const cart=await Cart.findOne({where: {UserId: userId}})
+    products=await cart.getProducts()
+  }
+  catch (e) {return res.json({err: 'something went wrong'})}
+  let totalAmount=0
+  products=products.map(item=>
+  {
+    const {id,category,name,price,taxCategory,taxAmount}=item
+    const quantity=item.CartItem.quantity
+    totalAmount+=price+taxAmount
+    return {id,category,name,price,taxCategory,taxAmount,quantity}
+  })
+  return res.json({data:
+    {
+      products,
+      totalAmount
+    }
+  })
+})
 export default router
