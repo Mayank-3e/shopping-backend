@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {User,Cart} from "../models/index.js";
+import {User,Cart,Order, Product} from "../models/index.js";
 
 const router=Router()
 
@@ -47,26 +47,56 @@ router.post('/',async(req,res)=>
 router.get('/:userId/bill',async(req,res)=>
 {
   const {userId}=req.params
-  let products
   try
   {
     const cart=await Cart.findOne({where: {UserId: userId}})
-    products=await cart.getProducts()
+    let products=await cart.getProducts()
+    let totalAmount=0
+    products=products.map(item=>
+      {
+        const {id,category,name,price,taxCategory,taxAmount}=item
+        const quantity=item.CartItem.quantity
+        totalAmount+=price+taxAmount
+        return {id,category,name,price,taxCategory,taxAmount,quantity}
+      })
+    return res.json({data:
+      {
+        products,
+        totalAmount
+      }
+    })
   }
   catch (e) {return res.json({err: 'something went wrong'})}
-  let totalAmount=0
-  products=products.map(item=>
+})
+
+router.post('/:userId/confirm',async(req,res)=>
+{
+  const {userId}=req.params
+  try
   {
-    const {id,category,name,price,taxCategory,taxAmount}=item
-    const quantity=item.CartItem.quantity
-    totalAmount+=price+taxAmount
-    return {id,category,name,price,taxCategory,taxAmount,quantity}
-  })
-  return res.json({data:
+    const user=await User.findByPk(userId,{
+      include:{
+        model: Cart,
+        include: {model: Product}
+      }
+    })
+    const products=user.Cart.Products
+    let totalAmount=0
+    const bill=products.map(item=>
     {
-      products,
-      totalAmount
-    }
-  })
+      const {id,category,name,price,taxCategory,taxAmount}=item
+      const quantity=item.CartItem.quantity
+      totalAmount+=price+taxAmount
+      return {id,category,name,price,taxCategory,taxAmount,quantity}
+    })
+    const order=await user.createOrder({totalAmount})
+    await order.addProducts(products)
+    return res.json({data:order})
+  }
+  catch (e)
+  {
+    console.error(e);
+    return res.json({err: 'something went wrong'})
+  }
 })
 export default router

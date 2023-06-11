@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../db.js";
 
-export const Product = sequelize.define('Product',
+const Product = sequelize.define('Product',
 {
   category: DataTypes.ENUM('product','service'),
   name:
@@ -27,3 +27,4 @@ export const Product = sequelize.define('Product',
     fields: ['name','category']
   }]
 });
+export default Product
