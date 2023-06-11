@@ -1,8 +1,7 @@
 import express from 'express'
 import cors from 'cors'
-import { Product } from './models/index.js';
 import SyncAll from './models/index.js';
-import { userRouter, cartRouter } from './controllers/index.js'
+import { adminRouter, userRouter, cartRouter } from './controllers/index.js'
 
 const app = express();
 const port=process.env.PORT||4000
@@ -11,20 +10,7 @@ app.use(cors())
 
 SyncAll()
 
-app.get('/', async(_,res)=>
-{
-  try
-  {
-    const data = await Product.findAll()
-    return res.json({data})
-  }
-  catch(e)
-  {
-    console.error(e);
-    return res.json({err: 'Cannot fetch.'})
-  }
-})
-
+app.use('/admin',adminRouter)
 app.use('/users',userRouter)
 app.use('/cart',cartRouter)
 
